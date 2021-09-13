@@ -4,7 +4,7 @@ abstract class CommonRoutesConfig {
   app: express.Application;
   name: string;
 
-  constructor(app: express.Application, name: string) {
+  protected constructor(app: express.Application, name: string) {
     this.app = app;
     this.name = name;
     this.configureRoutes();
@@ -14,7 +14,7 @@ abstract class CommonRoutesConfig {
     return this.name;
   }
 
-  abstract configureRoutes(): express.Application;
+  abstract configureRoutes(): Promise<express.Application>;
 }
 
 export default CommonRoutesConfig;

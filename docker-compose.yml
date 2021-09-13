@@ -1,0 +1,43 @@
+version: '3'
+
+services:
+
+  postres:
+    container_name: awersome_crud-db
+    image: postgres:12
+    networks:
+      - webnet
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_DB: ${DB_DATABASE_NAME}
+    ports:
+     - ${DB_PORT}:${DB_PORT}
+    volumes:
+     - pgdata:/var/lib/postgresql/data
+
+  pgadmin:
+    container_name: mind_data_pgadmin
+    image: dpage/pgadmin4
+    ports:
+      - ${PGADMIN_DEFAULT_PORT}:${PGADMIN_DEFAULT_PORT}
+    networks:
+      - webnet
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+      PGADMIN_CONFIG_SERVER_MODE: 'False'
+      PGADMIN_LISTEN_PORT: ${PGADMIN_DEFAULT_PORT}
+    restart: always
+    depends_on:
+      - postgres
+    volumes:
+      - pgadmin:/root/.pgadmin
+
+networks:
+  webnet:
+    driver: bridge
+volumes:
+  pgdata:
+  pgadmin:

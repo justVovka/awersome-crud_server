@@ -1,16 +1,25 @@
 import express = require('express');
 import CommonRoutesConfig from '../common/common.routes.config';
+import UsersDal from "./users.dal";
+import {db_config} from "../config/db.config";
+
+const pgp = require('pg-promise')();
+const db = pgp(db_config);
 
 class UsersRoutes extends CommonRoutesConfig {
+  private readonly userDal:UsersDal = new UsersDal(db);
 
   constructor(app: express.Application) {
     super(app, 'UserRoutes');
   }
 
-  configureRoutes(): express.Application {
-    this.app.route(`/users`)
+  async configureRoutes(): Promise<express.Application> {
+    await this.app.route(`/users`)
       .get((req: express.Request, res: express.Response) => {
-        res.status(200).send('List of users');
+        this.userDal.getAll()
+          .then(data => {
+            return res.json(data)
+          });
       })
       .post((req:express.Request, res:express.Response) => {
         res.status(200).send('Post users');
