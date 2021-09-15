@@ -1,13 +1,13 @@
-import express = require('express');
+import express from "express";
 import CommonRoutesConfig from '../common/common.routes.config';
-import UsersDal from "./users.dal";
 import {db_config} from "../config/db.config";
+import UserRepository from "./user.repository";
 
 const pgp = require('pg-promise')();
 const db = pgp(db_config);
 
 class UsersRoutes extends CommonRoutesConfig {
-  private readonly userDal:UsersDal = new UsersDal(db);
+  private readonly userRepository:UserRepository = new UserRepository(db);
 
   constructor(app: express.Application) {
     super(app, 'UserRoutes');
@@ -16,7 +16,7 @@ class UsersRoutes extends CommonRoutesConfig {
   async configureRoutes(): Promise<express.Application> {
     await this.app.route(`/users`)
       .get((req: express.Request, res: express.Response) => {
-        this.userDal.getAll()
+        this.userRepository.all()
           .then(data => {
             return res.json(data)
           });

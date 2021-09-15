@@ -4,5 +4,5 @@ export interface User {
   name: string;
   surname: string;
   birthdate: Date;
-  profession: string | null
+  profession: string | null;
 }

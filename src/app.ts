@@ -1,56 +1,38 @@
-import express = require("express");
+import express from "express";
 import * as http from 'http';
-import * as winston from 'winston';
-import * as expressWinston from 'express-winston';
-import debug from 'debug';
-import cors = require("cors");
-import CommonRoutesConfig from './common/common.routes.config';
+import cors from "cors";
 require('dotenv').config();
+import * as expressWinston from 'express-winston';
+const swaggerUi = require('swagger-ui-express');
 
 import UsersRoutes from './users/users.routes.config';
+import CommonRoutesConfig from './common/common.routes.config';
+import {debugLog, loggerOptions} from "./middleware/log";
+const swaggerDocument = require('./swagger/apidocs.json');
+
 
 const app:express.Application = express();
+
+app.use(cors());
+app.use(express.json());
+app.use(expressWinston.logger(loggerOptions));
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 const server:http.Server = http.createServer(app);
 const port = process.env.SERVER_PORT;
+
 const routes:Array<CommonRoutesConfig> = [];
-const debugLog: debug.IDebugger = debug('app');
-
-app.use(express.json());
-app.use(cors());
-
-// here we are preparing the expressWinston logging middleware configuration,
-// which will automatically log all HTTP requests handled by Express.js
-const loggerOptions: expressWinston.LoggerOptions = {
-  transports: [new winston.transports.Console()],
-  format: winston.format.combine(
-    winston.format.json(),
-    winston.format.prettyPrint(),
-    winston.format.colorize({ all: true })
-  ),
-};
-
-if (!process.env.DEBUG) {
-  loggerOptions.meta = false; // when not debugging, log requests as one-liners
-}
-
-// initialize the logger with the above configuration
-app.use(expressWinston.logger(loggerOptions));
-
-// here we are adding the UserRoutes to our array,
-// after sending the Express.js application object to have the routes added to our app!
 routes.push(new UsersRoutes(app));
 
-// this is a simple route to make sure everything is working properly
-const runningMessage = `Server running at http://localhost:${port}`;
 app.get('/', (req: express.Request, res: express.Response) => {
   res.status(200).send(runningMessage)
 });
+
+const runningMessage = `Server running at http://localhost:${port}`;
 
 server.listen(port, () => {
   routes.forEach((route: CommonRoutesConfig) => {
     debugLog(`Routes configured for ${route.getName()}`);
   });
-  // our only exception to avoiding console.log(), because we
-  // always want to know when the server is done starting up
   console.log(runningMessage);
 });
