@@ -10,7 +10,7 @@ class UserRepository {
   }
 
   async findById(id: string): Promise<User | null> {
-    return this.db.oneOrNone(`SELECT * FROM users WHERE id = ${id}`);
+    return this.db.one(`SELECT * FROM users WHERE id = '${id}'`);
   }
 
   async findByName(name: string): Promise<User | null> {

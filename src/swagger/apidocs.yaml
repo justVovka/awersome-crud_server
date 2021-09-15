@@ -21,7 +21,37 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
-
+  /users/{userId}:
+    get:
+      summary: Возвращает пользователяя с заданным userId
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: ID поле формата uuid нужного пользователя
+      responses:
+        '200':
+          description: Один пользователь
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '404':
+          description: Пользователя с таким ID не существует
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: 404
+                  message:
+                    type: string
+                    example: User with this ID does not exist
 components:
   schemas:
     User:
