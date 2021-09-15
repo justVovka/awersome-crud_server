@@ -1,0 +1,44 @@
+openapi: 3.0.1
+info:
+  title: Awersome CRUD API
+  description: API для работы с сервисом.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Локальный сервер
+
+paths:
+  /users:
+    get:
+      summary: Возвращает список всех пользователей
+      responses:
+        '200':
+          description: JSON массив всех пользователей
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: 'John'
+        surname:
+          type: string
+          example: 'Doe'
+        birthdate:
+          type: string
+          format: date
+        profession:
+          type: string
+          example: 'Web Developer'

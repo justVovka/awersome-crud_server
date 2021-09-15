@@ -1,21 +1,23 @@
 import express from "express";
 import * as http from 'http';
+import * as path from "path";
 import cors from "cors";
 require('dotenv').config();
 import * as expressWinston from 'express-winston';
 const swaggerUi = require('swagger-ui-express');
+const YAML = require('yamljs');
 
 import UsersRoutes from './users/users.routes.config';
 import CommonRoutesConfig from './common/common.routes.config';
 import {debugLog, loggerOptions} from "./middleware/log";
-const swaggerDocument = require('./swagger/apidocs.json');
-
 
 const app:express.Application = express();
 
 app.use(cors());
 app.use(express.json());
 app.use(expressWinston.logger(loggerOptions));
+
+const swaggerDocument = YAML.load(path.resolve(__dirname, './swagger/apidocs.yaml'));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 const server:http.Server = http.createServer(app);

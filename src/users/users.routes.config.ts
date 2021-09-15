@@ -14,7 +14,7 @@ class UsersRoutes extends CommonRoutesConfig {
   }
 
   async configureRoutes(): Promise<express.Application> {
-    await this.app.route(`/users`)
+    await this.app.route(`/api/v1/users`)
       .get((req: express.Request, res: express.Response) => {
         this.userRepository.all()
           .then(data => {
