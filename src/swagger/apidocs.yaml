@@ -21,6 +21,42 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
+    post:
+      summary: Добавляет нового пользователя
+      requestBody:
+        description: Новый пользователь
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PostUser'
+      responses:
+        '201':
+          description: Пользователь усппешно добавлен
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: 201
+                  message:
+                    type: string
+                    example: New user created successfully
+        '400':
+          description: Ошибка заполнения тела запроса
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: 400
+                  message:
+                    type: string
+                    example: Property "id" is required
   /users/{userId}:
     get:
       summary: Возвращает пользователяя с заданным userId
@@ -56,6 +92,29 @@ components:
   schemas:
     User:
       type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          example: 'John'
+        surname:
+          type: string
+          example: 'Doe'
+        birthdate:
+          type: string
+          format: date
+        profession:
+          type: string
+          example: 'Web Developer'
+    PostUser:
+      type: object
+      required:
+        - id
+        - name
+        - surname
+        - birthdate
       properties:
         id:
           type: string

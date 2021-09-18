@@ -18,9 +18,22 @@ class UserRepository {
   }
 
   async add(id: string, name: string, surname: string, birthdate: Date, profession?: string): Promise<User> {
-    return this.db.one(
+    if (!id) {
+      throw new Error('Property "id" is required');
+    }
+    if (!name) {
+      throw new Error('Property "name" is required');
+    }
+    if (!surname) {
+      throw new Error('Property "surname" is required');
+    }
+    if (!birthdate) {
+      throw new Error('Property "birthdate" is required');
+    }
+
+    return this.db.query(
       `INSERT INTO users(id, name, surname, birthdate, profession) 
-            VALUES (${id}, ${name}, ${surname}, ${birthdate}, ${profession});`);
+            VALUES ('${id}', '${name}', '${surname}', '${birthdate}', '${profession}');`);
   }
 
   async remove(id: string): Promise<number> {
