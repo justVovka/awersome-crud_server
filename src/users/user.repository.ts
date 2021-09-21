@@ -1,6 +1,5 @@
 import {IDatabase} from "pg-promise";
 import {User} from "./user.model";
-import {IResult} from "pg-promise/typescript/pg-subset";
 
 class UserRepository {
   constructor(private db:IDatabase<any>) {}
@@ -37,7 +36,7 @@ class UserRepository {
   }
 
   async remove(id: string): Promise<number> {
-    return this.db.result(`DELETE FROM users WHERE id = ${id}`, (r: IResult) => r.rowCount);
+    return this.db.query(`DELETE FROM users WHERE id = '${id}';`);
   }
 
   async total(): Promise<number> {
