@@ -12,10 +12,6 @@ class UserRepository {
     return this.db.one(`SELECT * FROM users WHERE id = '${id}'`);
   }
 
-  async findByName(name: string): Promise<User | null> {
-    return this.db.oneOrNone(`SELECT * FROM users WHERE name = ${name}`);
-  }
-
   async add(id: string, name: string, surname: string, birthdate: Date, profession?: string): Promise<User> {
     if (!id) {
       throw new Error('Property "id" is required');
@@ -39,12 +35,21 @@ class UserRepository {
     return this.db.query(`DELETE FROM users WHERE id = '${id}';`);
   }
 
-  async total(): Promise<number> {
-    return this.db.one('SELECT count(*) FROM users', [], (a: { count: string }) => +a.count);
-  }
-
-  async empty(): Promise<null> {
-    return this.db.none(`TRUNCATE TABLE users CASCADE`);
+  async update(user:User, id:string): Promise<number> {
+    user = {
+      id,
+      name: user.name || '',
+      surname: user.surname || '',
+      birthdate: user.birthdate || new Date().toISOString(),
+      profession: user.profession || ''
+    };
+    return this.db.query(`UPDATE users SET \
+      name = CASE WHEN '${user.name}' != '' THEN '${user.name}' ELSE name END, \
+      surname = CASE WHEN '${user.surname}' != '' THEN '${user.surname}' ELSE surname END, \
+      birthdate = CASE WHEN '${user.birthdate}' != '${new Date().toISOString()}' THEN '${user.birthdate}' ELSE birthdate END, \
+      profession = CASE WHEN '${user.profession}' != '' THEN '${user.profession}' ELSE profession END \
+      WHERE id = '${id}';
+    `);
   }
 }
 

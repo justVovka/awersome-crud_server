@@ -88,6 +88,54 @@ paths:
                   message:
                     type: string
                     example: User with same ID doesn`t exist
+    patch:
+      summary: Изменение полей пользователяя с заданным userId
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: string
+            format: uuid
+          required: true
+          description: ID поле формата uuid нужного пользователя
+      requestBody:
+        description: Возможно отправлять сущность целиком или по 1 полю с новым значением
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: 'John'
+      responses:
+        '200':
+          description: Сообщение об успешной операции
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: 200
+                  message:
+                    type: string
+                    example: User was updated successfully
+        '404':
+          description: Пользователя с таким ID не существует
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  code:
+                    type: number
+                    example: 404
+                  message:
+                    type: string
+                    example: User with same ID doesn`t exist
     delete:
       summary: Удаление пользователяя с заданным userId
       parameters:
