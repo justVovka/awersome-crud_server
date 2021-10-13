@@ -13,7 +13,10 @@ import {debugLog, loggerOptions} from "./middleware/log";
 
 const app:express.Application = express();
 
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true
+}));
 app.use(express.json());
 app.use(expressWinston.logger(loggerOptions));
 
